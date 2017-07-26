@@ -1,0 +1,19 @@
+{
+  "name": "ssa-archery_be",
+  "version": "1.0.0",
+  "description": "scrapper for ssa-archery.be",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "0RS",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "cllc": "0.0.10",
+    "fs": "0.0.1-security",
+    "needle": "^1.6.0",
+    "sqlite3": "^3.1.8",
+    "tress": "^1.0.3"
+  }
+}
