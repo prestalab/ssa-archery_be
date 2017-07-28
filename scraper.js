@@ -2,7 +2,6 @@ var log     = require('cllc')();
 var tress   = require('tress');
 var needle  = require('needle');
 var cheerio = require('cheerio');
-var fs      = require('fs');
 var sqlite3 = require('sqlite3').verbose();
 
 
@@ -35,7 +34,6 @@ db.serialize(function () {
 });
 
 q.drain = function () {
-	//fs.writeFileSync('./data.json', JSON.stringify(results, null, 4));
 
 
 	console.log('failed', q.failed);
@@ -72,7 +70,7 @@ function crawl(data, callback) {
 		// console.log('needle');
 		var statusCode = 200;
 		if (err || res.statusCode !== 200) {
-			q.concurrency === 1 && log.e((err || res.statusCode) + ' - ' + url);
+			q.concurrency === 1 && log.e((err || res.statusCode) + ' - ' + data.url);
 			
 			
 			statusCode = res.statusCode;
