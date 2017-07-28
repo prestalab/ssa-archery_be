@@ -27,29 +27,20 @@ var q = tress(crawl, 1);
 // 	log('q.failed', q.failed);
 // }
 
+var db = new sqlite3.Database('data.sqlite');
+
+
+db.serialize(function () {
+	db.run('CREATE TABLE IF NOT EXISTS data (url TEXT, group_name TEXT, class_name TEXT, brand TEXT, reference PRIMARY KEY, price REAL, avb NUMERIC, img TEXT, name TEXT)');
+});
+
 q.drain = function () {
-	fs.writeFileSync('./data.json', JSON.stringify(results, null, 4));
-	var db = new sqlite3.Database('data.sqlite');
-	db.on("error", function(error) {
-	    console.log(error);
-	}); 
+	//fs.writeFileSync('./data.json', JSON.stringify(results, null, 4));
+
 
 	console.log('failed', q.failed);
 	// console.log(results);
-	db.serialize(function () {
-		// db.run('DROP TABLE IF EXISTS data');
-		db.run('CREATE TABLE IF NOT EXISTS data (url TEXT, group_name TEXT, class_name TEXT, brand TEXT, reference PRIMARY KEY, price REAL, avb NUMERIC, img TEXT, name TEXT)');
-		var stmt = db.prepare('INSERT OR REPLACE INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-
-		Object.keys(results[0]).map(function (key) {
-			r = results[0][key];
-			//stmt.run(results[0][key]);
-			stmt.run(Object.keys(r).map(function (key) {return r[key];})); 
-			
-		});
-		stmt.finalize();
-		db.close();
-	});
+	db.close();
 	log(q.failed);
 	log.finish();
 	log('Работа закончена');
@@ -127,6 +118,15 @@ function crawl(data, callback) {
 				}
 			});
 
+			db.serialize(function () {
+				var stmt = db.prepare('INSERT OR REPLACE INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+				Object.keys(product).map(function (key) {
+					r = product[key];
+					stmt.run(Object.keys(r).map(function (key) {return r[key];})); 
+					
+				});
+				stmt.finalize();
+			});
 			results = results.concat(product);
 
 			urls.push(data.url);
